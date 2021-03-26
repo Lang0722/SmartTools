@@ -51,6 +51,7 @@ void init()
 {
 	lcd.init();
 	lcd.setContrast(0.5);
+    myClock = Clock();
 }
 
 void welcomePage()
@@ -87,11 +88,13 @@ void clockModule()
 	{
 		if (buttonA.read())
 		{
-			myClock.showTime(lcd);
+			myClock.showTime(lcd,buttonC);
+            return;
 		}
 		else if (buttonB.read())
 		{
 			myClock.setTime();
+            return;
 		}
         else if (buttonC.read()){
             return;
