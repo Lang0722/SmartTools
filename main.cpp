@@ -5,6 +5,8 @@
 #include "mbed.h"
 #include "platform/mbed_thread.h"
 #include <cstdio>
+#include <iostream>
+#include <string>
 
 N5110 lcd(p14, p8, p9, p10, p11, p13, p21);
 AnalogIn tmp36(p16);
@@ -20,6 +22,7 @@ Sensor mySensor;
 
 // for the clock
 Ticker ticker;
+Ticker ticker2;
 
 void init();
 void welcomePage();
@@ -28,6 +31,7 @@ void clockModule();
 void sensorModule();
 void networkModule();
 void timer_isr();
+void timer_isr2();
 
 // main() runs in its own thread in the OS
 int main() {
@@ -96,7 +100,7 @@ void clockModule() {
         } else if (buttonB.read()) {
             ticker.detach(); // detach the timer_isr() for setting time
             myClock.setTime(buttonD, buttonA, buttonC, buttonB, joystick, lcd);
-            ticker.attach(&timer_isr, 1000); // resume the ticking
+            ticker.attach(&timer_isr, 1); // resume the ticking
             return;
         } else if (buttonC.read()) {
             return;
@@ -229,13 +233,55 @@ void sensorModule() {
 
 void networkModule() {
     lcd.clear();
-    lcd.printString("this is network", 0, 1);
+    lcd.printString("A: Send", 0, 2);
+    lcd.printString("B: Receive", 0, 3);
+    lcd.printString("C: Quit", 0 , 4);
     lcd.refresh();
+
+    thread_sleep_for(500);
+
     while (1) {
+        if (buttonA.read()) {
+            lcd.clear();
+            lcd.printString("Start Sending", 0, 2);
+            lcd.printString("Interval: 1s", 0, 3);
+            lcd.printString("A to skip", 0, 4);
+            lcd.printString("C to exit", 0, 5);
+            lcd.refresh();
+
+            thread_sleep_for(200);
+            while (!buttonA.read()) {
+            }
+
+            // ticker2.attach(&timer_isr2, 1);
+            while (1) {
+                printf("%d:",myClock.hour);
+                printf("%d:",myClock.min);
+                printf("%d ",myClock.sec);
+                
+                printf("%d/",myClock.day);
+                printf("%d/",myClock.month);
+                printf("%d;",myClock.year);
+
+                printf("%d;", mySensor.reportTemp(tmp36));
+                printf("%d\n", mySensor.reportLdr(ldr));
+
+
+                if (buttonC.read()) {
+                    return;
+                }
+                thread_sleep_for(1000);
+            }
+            return;
+        }else if (buttonC.read()) {
+            return;
+        }
     }
 }
 
 void timer_isr() { 
     myClock.processTime(); 
 }
+
+
 

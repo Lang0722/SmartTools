@@ -22,6 +22,8 @@ public:
                        DigitalIn &buttonC, Joystick &joystick);
   void setInterval(N5110 &lcd, DigitalIn &buttonA, DigitalIn &buttonB, DigitalIn &buttonC, Joystick &joystick);
   void checkTemp(Tone &dac);
+  int reportTemp(AnalogIn &tmp36);
+  int reportLdr(AnalogIn &ldr);
 
   int modflag_interval;
   int alarmflag;

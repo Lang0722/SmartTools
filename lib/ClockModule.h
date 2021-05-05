@@ -15,9 +15,7 @@ public:
     void setTime(DigitalIn &buttonD, DigitalIn &buttonA, DigitalIn &buttonC,
                DigitalIn &buttonB, Joystick &joystick, N5110 &lcd);
     void processTime();
-    void de_processTime();
 
-private:
     int hour;
     int min;
     int sec;

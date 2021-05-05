@@ -11,8 +11,8 @@ Clock::Clock(){
     min = 0;
     sec = 0;
     year = 2021;
-    day = 10;
-    month = 2;
+    day = 1;
+    month = 5;
 }
 
 void Clock::showTime(N5110 &lcd,DigitalIn &buttonC){
@@ -84,17 +84,13 @@ void Clock::setTime(DigitalIn &buttonD, DigitalIn &buttonA, DigitalIn &buttonC, 
         coord = joystick.get_mapped_coord();
 
         if (buttonA.read()) {
-            printf("move right\n");
             posflag++;
         }else if (buttonC.read()) {
-            printf("move left\n");
             posflag--;
         }else if (coord.y > 0.5) {
             addflag = 1 ;
-            printf("%f\n",coord.y);
         }else if(coord.y < -0.5){
             addflag = -1;
-            printf("%f\n",coord.y);
         }else if (buttonB.read()) {
             if (showflag) {
                 showflag = 0;
@@ -249,24 +245,4 @@ void Clock::processTime(){
         hour = 0;
         day++;
     }
-}
-
-void Clock::de_processTime(){
-    sec--;
-
-    if (sec < 0) {
-        min--;
-        sec = 59;
-    }
-
-    if (min < 0) {
-        hour--;
-        min = 59;
-    }
-
-    if (hour < 0) {
-        hour = 24;
-        day--;
-    }
-
 }

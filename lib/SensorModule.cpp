@@ -482,3 +482,11 @@ void Sensor::checkTemp(Tone &dac){
         }
     }
 }
+
+int Sensor::reportTemp(AnalogIn &tmp36){
+    return int((tmp36.read()*330.0f - 50.0f) * 100.0f);
+}
+
+int Sensor::reportLdr(AnalogIn &ldr){
+    return int(ldr.read()*100);
+}
