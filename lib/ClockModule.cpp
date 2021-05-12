@@ -24,7 +24,7 @@ void Clock::showTime(N5110 &lcd,DigitalIn &buttonC){
     
     while (1) {
 
-        lcd.clear();
+        lcd.clear();   // format the data
         temp_hour = to_string(hour);
         temp_min = to_string(min);
         temp_sec = to_string(sec);
@@ -83,6 +83,7 @@ void Clock::setTime(DigitalIn &buttonD, DigitalIn &buttonA, DigitalIn &buttonC, 
         lcd.clear();
         coord = joystick.get_mapped_coord();
 
+        // check the button and joystick's movement
         if (buttonA.read()) {
             posflag++;
         }else if (buttonC.read()) {
@@ -99,6 +100,7 @@ void Clock::setTime(DigitalIn &buttonD, DigitalIn &buttonA, DigitalIn &buttonC, 
             }
         }
 
+        //format the data
         temp_hour = to_string(hour);
         temp_min = to_string(min);
         temp_sec = to_string(sec);
@@ -114,6 +116,7 @@ void Clock::setTime(DigitalIn &buttonD, DigitalIn &buttonA, DigitalIn &buttonC, 
         temp_date.append("/");
         temp_date.append(to_string(year));
 
+        // show the data
         if (!showflag) {
             lcd.printString(temp_hour.c_str(), 10, 2);
         }else {
