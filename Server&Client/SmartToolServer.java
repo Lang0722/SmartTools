@@ -30,7 +30,7 @@ public class SmartToolServer extends Thread {
             status = true;
             while (status) {
                 if ((inputLine = in.readLine()) != null)
-                    processInput(inputLine);
+                    processInput(inputLine);   // start process the client's message
                 if (inputLine.equals("Bye"))
                     break;
             }
@@ -49,21 +49,23 @@ public class SmartToolServer extends Thread {
         List<String> ldr_list = new ArrayList<String>();
         List<String> time = new ArrayList<String>();
 
-        in_file = new BufferedReader(new FileReader("data.txt"));
+        in_file = new BufferedReader(new FileReader("data.txt"));  // open the data file from the board
         if (inputLine.equals("1") || inputLine.equals("2")) {
             int lineNum = 1;
             String prestr;
-            while ((prestr = in_file.readLine()) != null){
+            while ((prestr = in_file.readLine()) != null){  
                 lineNum++;
             }
 
             in_file.close();
             in_file = new BufferedReader(new FileReader("data.txt"));
 
+            // read the data file line by line
             for (int i =0; i<lineNum-8;i++){
                 in_file.readLine();
             }
 
+            // format the data
             for (int i = 0; i < 6; i++) {
                 String str = in_file.readLine();
                 if (str != null) {
@@ -78,6 +80,8 @@ public class SmartToolServer extends Thread {
                     time.add("0");
                 }
             }
+            
+            //send the data
             out.println(temp_list);
             out.println(ldr_list);
             out.println(time);
