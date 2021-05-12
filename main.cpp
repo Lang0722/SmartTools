@@ -25,7 +25,7 @@ Ticker ticker;
 Ticker ticker2;
 
 void init();
-void welcomePage();
+void welcomePage(); 
 void selectPage();
 void clockModule();
 void sensorModule();
@@ -43,6 +43,7 @@ Loop:
     thread_sleep_for(500);
     while (1) {
 
+        // check the status of buttons and slecte the module
         if (buttonA.read()) {
             clockModule();
             goto Loop;
@@ -57,7 +58,7 @@ Loop:
     }
 }
 
-void init() {
+void init() {  // init all objects
     lcd.init();
     dac.init();
     lcd.setContrast(0.5);
@@ -66,7 +67,7 @@ void init() {
     mySensor = Sensor();
 }
 
-void welcomePage() {
+void welcomePage() {  
     lcd.clear();
     lcd.printString(" Smart Tools! ", 0, 1);
     lcd.printString("    Press A   ", 0, 2);
@@ -76,7 +77,7 @@ void welcomePage() {
     }
 }
 
-void selectPage() {
+void selectPage() {   
     lcd.clear();
     lcd.printString("A: Clock  ", 0, 1);
     lcd.printString("B: Sensor  ", 0, 3);
@@ -93,7 +94,7 @@ void clockModule() {
     thread_sleep_for(1000);
 
     while (1) {
-        if (buttonA.read()) {
+        if (buttonA.read()) {  // attach the timer to process the time
             ticker.attach(&timer_isr, 1);
             myClock.showTime(lcd, buttonC);
             return;
@@ -119,7 +120,7 @@ void sensorModule() {
     Vector2D coord = joystick.get_mapped_coord(); // for change pages
 
     while (1) {
-        if (buttonA.read()) {
+        if (buttonA.read()) {  // enter the Temperature section
             thread_sleep_for(300);
 
             lcd.clear();
@@ -130,13 +131,13 @@ void sensorModule() {
             lcd.refresh();
 
             while (1) {
-                if (buttonA.read()) {
+                if (buttonA.read()) {   // show the Temperature data
                     mySensor.showTempData(lcd, buttonC, tmp36, dac);
                     return;
-                } else if (buttonB.read()) {
+                } else if (buttonB.read()) {  // show the Graph
                     mySensor.showTempGraph(lcd, buttonC, buttonB, tmp36);
                     return;
-                } else if (buttonC.read()) {
+                } else if (buttonC.read()) {   // enter the Setting section
 
                     thread_sleep_for(300);
                     Page1:
@@ -198,7 +199,7 @@ void sensorModule() {
             }
 
             return;
-        } else if (buttonB.read()) {
+        } else if (buttonB.read()) {   // enter LDR section
             thread_sleep_for(500);
 
             lcd.clear();
@@ -254,7 +255,7 @@ void networkModule() {
             }
 
             // ticker2.attach(&timer_isr2, 1);
-            while (1) {
+            while (1) {   // start to sent the data to the PC
                 printf("%d:",myClock.hour);
                 printf("%d:",myClock.min);
                 printf("%d ",myClock.sec);
