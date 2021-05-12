@@ -17,6 +17,7 @@ public class Server {
             System.exit(-1);
         }
 
+        //creat a thread pool with volume of 15
         service = Executors.newFixedThreadPool(15);
 
         while (true){
