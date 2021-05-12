@@ -30,11 +30,12 @@ void Sensor::showTempData(N5110 &lcd, DigitalIn &buttonC, AnalogIn &tmp36, Tone 
         voltage = 3.3f * tmp36.read();
         tempRead = 100.0f * voltage - 50.0f;
 
-        checkTemp(dac);
+        checkTemp(dac);  // for alarm function
 
         char buffer[14];
         sprintf(buffer, "T=%.2f C", tempRead);
-
+        
+        // print the data
         lcd.printString("Temperature:", 0, 2);
         lcd.printString(buffer, 0, 3);
         lcd.printString("C to exit", 0, 4);
@@ -58,7 +59,8 @@ void Sensor::showLDRData(N5110 &lcd, DigitalIn &buttonC, AnalogIn &ldr)
 
         char buffer[14];
         sprintf(buffer, "T=%.2f %%", ldrRead * 100);
-
+        
+        // a circle to show the ldr data
         lcd.drawCircle(40, 18, 18, FILL_TRANSPARENT);
         int percent = int(ldrRead * 18.0f);
         lcd.drawCircle(40, 18, percent, FILL_BLACK);
@@ -82,12 +84,14 @@ void Sensor::showTempGraph(N5110 &lcd, DigitalIn &buttonC, DigitalIn &buttonB,
     while (!buttonC.read())
     {
 
+        // read and store the recent temperature data
         for (int i = 0; i < 6; i++)
         {
             tempData[i] = (tmp36.read() * 3.3f) * 100.0f - 50.0f;
             thread_sleep_for(intervalTemp);
         }
 
+        // check the mod button
         if (buttonB.read())
         {
             modflag++;
@@ -102,7 +106,7 @@ void Sensor::showTempGraph(N5110 &lcd, DigitalIn &buttonC, DigitalIn &buttonB,
         lcd.setPixel(0, 45);
         lcd.setPixel(4, 45);
 
-        if (modflag == 0)
+        if (modflag == 0)  // for line bar graph
         {
             lcd.drawRect(12, 0, 60, 5, FILL_TRANSPARENT);
             lcd.drawRect(12, 8, 60, 5, FILL_TRANSPARENT);
@@ -126,7 +130,7 @@ void Sensor::showTempGraph(N5110 &lcd, DigitalIn &buttonC, DigitalIn &buttonB,
 
             lcd.refresh();
         }
-        else if (modflag == 1)
+        else if (modflag == 1)   // for text info
         {
 
             for (int i = 0; i < 6; i++)
@@ -138,7 +142,7 @@ void Sensor::showTempGraph(N5110 &lcd, DigitalIn &buttonC, DigitalIn &buttonB,
 
             lcd.refresh();
         }
-        else if (modflag == 2)
+        else if (modflag == 2)  // for S-T info
         {
 
             for (int i = 0; i < 6; i++)
@@ -168,12 +172,14 @@ void Sensor::setStandardTemp(N5110 &lcd, DigitalIn &buttonA, DigitalIn &buttonB,
     {
         addflag = 0;
         coord = joystick.get_mapped_coord();
-
+        
+        // format the data
         value[3] = int(standardTemp) / 10;
         value[2] = int(standardTemp) % 10;
         value[1] = int(standardTemp*10) % 10;
         value[0] = int(standardTemp*100) % 10;
 
+        //check buttons
         if (buttonA.read())
         {
             posflag++;
@@ -193,7 +199,7 @@ void Sensor::setStandardTemp(N5110 &lcd, DigitalIn &buttonA, DigitalIn &buttonB,
 
         pos = posflag % 4;
 
-        
+        // check the pos and set the value
         lcd.clear();
         switch (pos) {
         case 0:{
@@ -291,12 +297,14 @@ void Sensor::setStandardTemp(N5110 &lcd, DigitalIn &buttonA, DigitalIn &buttonB,
 
         }
         
+        //return the changed value
         if (addflag != 0) {
             standardTemp = float(value[3])*10.0 + float(value[2])*1.0 + float(value[1]) * 0.1 + float(value[0]) * 0.01;
         }
         // standardTemp = value[3]*10.0 + value[2]*1.0 + value[1] * 0.1 + value[0] * 0.01;
     
 
+        // show the data
         char buffer[14];
         sprintf(buffer, "T=%.2f C", standardTemp);
         lcd.printString(buffer,12,3);
@@ -317,12 +325,14 @@ void Sensor::showLDRGraph(N5110 &lcd, DigitalIn &buttonC, DigitalIn &buttonB, An
     thread_sleep_for(100);
     while (!buttonC.read()) {
 
+        //store the LDR data
         for (int i = 0; i < 6; i++)
         {
             ldrData[i] = ldr.read()*100;
             thread_sleep_for(intervalLdr);
         }
 
+        // check mod button
         if (buttonB.read())
         {
             modflag++;
@@ -337,7 +347,7 @@ void Sensor::showLDRGraph(N5110 &lcd, DigitalIn &buttonC, DigitalIn &buttonB, An
         lcd.setPixel(0, 45);
         lcd.setPixel(4, 45);
 
-        if (modflag == 0)
+        if (modflag == 0)  // for line bar
         {
             lcd.drawRect(12, 0, 60, 5, FILL_TRANSPARENT);
             lcd.drawRect(12, 8, 60, 5, FILL_TRANSPARENT);
@@ -358,7 +368,7 @@ void Sensor::showLDRGraph(N5110 &lcd, DigitalIn &buttonC, DigitalIn &buttonB, An
             }
 
             lcd.refresh();
-        }else if (modflag == 1) {
+        }else if (modflag == 1) {  // for text info
 
             for (int i = 0; i < 6; i++)
             {
@@ -396,7 +406,8 @@ void Sensor::setInterval(N5110 &lcd,DigitalIn &buttonA, DigitalIn &buttonB, Digi
         addflag = 0;
         coord = joystick.get_mapped_coord();
         float showdata;  // for display
-
+        
+        // check joystick and change the flags
         if (coord.y > 0.5) {
             addflag = 1;
         }else if (coord.y < -0.5) {
@@ -404,7 +415,7 @@ void Sensor::setInterval(N5110 &lcd,DigitalIn &buttonA, DigitalIn &buttonB, Digi
         }
 
         lcd.clear();
-        if (modflag_interval == 0) {
+        if (modflag_interval == 0) {  // for temperature section
             showdata = intervalTemp * 0.001f;
             sprintf(buffer, "Temp t=%.2f s", showdata);
             lcd.setPixel(44, 1);
@@ -422,7 +433,7 @@ void Sensor::setInterval(N5110 &lcd,DigitalIn &buttonA, DigitalIn &buttonB, Digi
 
                 intervalTemp = int(showdata * 1000);
             }
-        }else if (modflag_interval == 1) {
+        }else if (modflag_interval == 1) {  // for LDR section
             showdata = intervalLdr * 0.001f;
             sprintf(buffer, "LDR t=%.2f s", showdata);
             lcd.setPixel(38, 1);
@@ -440,7 +451,7 @@ void Sensor::setInterval(N5110 &lcd,DigitalIn &buttonA, DigitalIn &buttonB, Digi
 
                 intervalLdr = int(showdata * 1000);
             }
-        }else if (modflag_interval == 2) {
+        }else if (modflag_interval == 2) {  // for alarm section
             sprintf(buffer, "Alarm T=%.2fC", alarmTemp);
             lcd.printString(buffer, 0, 2);
             if (addflag != 0) {
@@ -450,7 +461,7 @@ void Sensor::setInterval(N5110 &lcd,DigitalIn &buttonA, DigitalIn &buttonB, Digi
                     alarmTemp = alarmTemp - 0.1;
                 }
             }
-        }else if (modflag_interval == 3){
+        }else if (modflag_interval == 3){  // for alarm's setting section
             lcd.printString("Status:", 0, 3);
             if (alarmflag == 0) {
                 lcd.printString("N", 44, 3);
@@ -483,10 +494,10 @@ void Sensor::checkTemp(Tone &dac){
     }
 }
 
-int Sensor::reportTemp(AnalogIn &tmp36){
+int Sensor::reportTemp(AnalogIn &tmp36){  // return the current temperature data 
     return int((tmp36.read()*330.0f - 50.0f) * 100.0f);
 }
 
-int Sensor::reportLdr(AnalogIn &ldr){
+int Sensor::reportLdr(AnalogIn &ldr){  // return the current ldr data
     return int(ldr.read()*100);
 }
