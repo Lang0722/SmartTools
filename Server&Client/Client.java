@@ -36,16 +36,19 @@ public class Client {
         stdIn = new BufferedReader(
                 new InputStreamReader(System.in));
 
+        // keep process the input from user and server
         while (true) {
             processInput();
         }
     }
 
     private void processInput() throws IOException {
+        // print the instructions
         System.out.println("please input");
         System.out.println("1. Graph");
         System.out.println("2. Data");
 
+        //wait user input
         fromUser = stdIn.readLine();
         System.out.println("Client: " + fromUser);
         out.println(fromUser);
@@ -55,6 +58,7 @@ public class Client {
         String temp_list = null;
         String ldr_list = null;
         String time_list = null;
+        // wait the server's message and store data to the string
         while (!(fromServer = in.readLine()).equals("done")) {
             if (flag == 0) {
                 temp_list = fromServer;
@@ -66,6 +70,7 @@ public class Client {
             flag++;
         }
 
+        // format the server's message
         assert temp_list != null;
         temp_list = temp_list.replaceAll("[\\[\\]\\s*]", "");
         assert ldr_list != null;
@@ -85,7 +90,7 @@ public class Client {
             ldrDataNum[i] = Integer.parseInt(ldrData[i]);
         }
 
-        if (fromUser.equals("1")) {
+        if (fromUser.equals("1")) { // show the temp and ldr's graph
             System.out.println("Temperature:");
             System.out.print(" ");
             for (int i = 0; i < tempDataNum.length; i++) {
@@ -111,7 +116,7 @@ public class Client {
                 }
                 System.out.println();
             }
-        } else if (fromUser.equals("2")) {
+        } else if (fromUser.equals("2")) {   // show the temp and ldr's data
             System.out.println(" ");
             for (int i = 0; i < tempDataNum.length; i++) {
                 System.out.print(time[i]);
